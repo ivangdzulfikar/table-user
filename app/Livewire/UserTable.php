@@ -13,6 +13,8 @@ class UserTable extends Component
     public $search;
     public $perPage = '5';
 
+    public $admin = '';
+
     public function updatingSearch() {
         $this->resetPage();
     }
@@ -20,7 +22,11 @@ class UserTable extends Component
     public function render()
     {
         return view('livewire.user-table', [
-            'users' => User::search($this->search)->paginate($this->perPage)
+            'users' => User::search($this->search)
+            ->when($this->admin !== '', function($query){
+                $query->where('is_admin', $this->admin);
+            })
+            ->paginate($this->perPage)
         ]);
     }
 }
